@@ -1,0 +1,7 @@
+
+This example doesn't contain recursive rules, so most queries should
+allow the inference engine to terminate.  Problematic cases, involving
+endless searches, should be rare.
+
+Try queries like "(Criminal West)" and "(Criminal ?person)".
+

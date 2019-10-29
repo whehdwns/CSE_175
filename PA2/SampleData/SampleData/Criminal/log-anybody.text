@@ -1,0 +1,47 @@
+BACKWARD CHAINING INFERENCE PROCEDURE
+Enter the name of the facts file:
+/home/noelle/CSE175/Programs/PA2/TestCases/Linux/Criminal/facts.dat
+Enter the name of the rules file:
+/home/noelle/CSE175/Programs/PA2/TestCases/Linux/Criminal/rules.dat
+FACTS:
+(Missile M1)
+(Owns Nono M1)
+(American West)
+(Enemy Nono America)
+RULES:
+(DEFRULE Criminality
+  (American ?x)
+  (Weapon ?y)
+  (Sells ?x ?y ?z)
+  (Hostile ?z)
+=>
+  (Criminal ?x)
+)
+
+(DEFRULE MissilesFromWest
+  (Missile ?x)
+  (Owns Nono ?x)
+=>
+  (Sells West ?x Nono)
+)
+
+(DEFRULE MissilesAreWeapons
+  (Missile ?x)
+=>
+  (Weapon ?x)
+)
+
+(DEFRULE EnemiesAreHostile
+  (Enemy ?x America)
+=>
+  (Hostile ?x)
+)
+
+Enter a (positive literal) query:
+(Criminal ?person)
+Running inference procedure ...
+QUERY IS TRUE UNDER THE BINDINGS:
+{
+?person = West
+}
+INFERENCE PROCEDURE COMPLETE
