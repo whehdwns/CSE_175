@@ -92,8 +92,15 @@ public class Eval {
 	// this function assumes that there are three dice
 	// in a hand (i.e., that the value of "have_size"
 	// is three).
+		// value_roll_hand -- Compute the expected utility value of this
+	// state, given that the hand is full. Note that
+	// this function assumes that there are three dice
+	// in a hand (i.e., that the value of "have_size"
+	// is three).
 	static double value_roll_hand(State s, int depth) {
 		double val = 0.0; // return value
+		double probability;
+		double utility_values;
 
 		// PLACE YOUR CODE HERE!
 		// 
@@ -102,10 +109,49 @@ public class Eval {
 		// THE HAND WILL IMMEDIATELY BE ROLLED BY THE CURRENT PLAYER.
 		// 
 		// YOUR CODE SHOULD CALL "value_rolled_hand" AT SOME POINT.
-
+		/*this value is positive if the state is good for the computer player and 
+		 * negative if the state is good for the human user.
+		 * 
+		 * ---Pseudocode---
+		 * First dice  - DieFace up1
+		 * if it is valid, then continue
+		 * second dice - DieFace up2
+		 * if it is valid, then continue
+		 * third dice  - DieFace up3
+		 * if it is valid, then continue
+		 * Roll the dice 
+		 * check the probability of those three dices (using rollProb from State)
+		 * 		public double rollProb(DieFace up1, DieFace up2, DieFace up3) From State
+		 * check the utility of those three dices
+		 * 		value_rolled_hand already calculates the expected utility of a game state 
+		 * 		in which the dice have already been rolled. 
+		 * Expected Utility == sums of (probability * utility value)
+		 * 
+		 * function must calculate the expected utility of the state by
+		 * considering every possible outcome of the dice roll and the
+		 * resulting utility value of each of those possible outcomes
+		 * utility values of the outcomes are to be calculated 
+		 * using the minimax algorithm for game-tree search
+		*/
+		for(DieFace up1 : DieFace.values()) {
+			if(up1 != DieFace.invalid) {
+				for(DieFace up2 :DieFace.values()) {
+					if(up2 != DieFace.invalid) {
+						for(DieFace up3 : DieFace.values()) {
+							if(up3 != DieFace.invalid) {
+								s.roll(up1, up2, up3);
+								probability = s.rollProb(up1, up2, up3);
+								utility_values = value_rolled_hand(s, depth);
+								val += probability *  utility_values; 
+							}
+						}
+					}
+				}
+			}
+		}
 		return (val);
 	} 
-
+	
 	// value_roll -- Compute the expected utility value of this state,
 	// given that the current player will be immediately
 	// drawing dice and rolling.
