@@ -271,17 +271,61 @@ public class Eval {
 	// should be bounded between plus and minus the value of
 	// "State.win_payoff". The heuristic evaluation value
 	// is returned.
+	/*
+	 * public double payoff() from state
+	 *  	Return the utility of the current state
+	 * 
+	 * it should quickly calculate a heuristic estimate of the quality of the current state of play.
+	 *  
+	 *  It should try to avoid getting shotgun 
+	 *  If computer hasn't collected any brain, no blasts, 
+	 *  	then no points, no roll
+	 *  In order human to win the computer
+	 *  	Human should have more brain
+	 *  	Human should have less blast
+	 * Safety Rule
+	 * 		Color
+	 * 			Reduce the probability if it's danger to roll
+	 * 			GREEN - BRAIN  	- Safe to roll 100%	-	Probability =1
+	 * 			YELLOW - Footstep	- Risky to roll 50% -	Probability = 1/2
+	 * 			RED -	Shotgun 	- Danger to roll 0% -	Probability = -1
+	 * 	Increase the probability of getting brain by including safety probability
+	 * 	Decrease the probability of getting blast	   
+	 */
 	static public double heuristic(State s) {
 		// Heuristic value to be returned ...
 		double value = 0.0;
-
+		double safety = 0;
 		// PLACE YOUR CODE HERE!
 		// 
 		// YOUR CODE SHOULD ESTIMATE THE EXPECTED UTILITY VALUE OF
 		// THE GIVEN STATE WITHOUT PERFORMING ANY LOOK-AHEAD SEARCH.
 		// THE RETURNED HEURISTIC VALUE SHOULD BE BETWEEN PLUS AND
 		// MINUS "State.win_payoff".  THIS FUNCTION SHOULD BE FAST.
-
+		//
+		if(s.blasts_collected== 0 || s.brains_collected ==0) {
+			return(-s.win_payoff);
+		}
+		if(s.comp_brains_eaten+s.blasts_collected >= State.brains_to_win) {
+			return(s.win_payoff);
+		}
+		if(s.brains_collected > 0) {
+			return (+s.win_payoff);
+		}
+		
+		for(Die d: s.hand) {
+			if(d.color == DieColor.red) {
+				safety = -d.Pfeet;
+			}
+			else if(d.color == DieColor.yellow) {
+				safety = d.Pfeet/2;
+			}
+			else if(d.color == DieColor.green) {
+				safety = d.Pfeet;
+			}
+			else safety = 0;
+			value  += (d.Pbrain+ safety) - (d.Pblast);
+		}
 		// Return the resulting heuristic value ...
 		return (value);
 	}
