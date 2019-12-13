@@ -199,16 +199,64 @@ public class Layer {
 
 	// computeOutputDelta -- Calculate the unit delta values for this
 	// output layer.
+	/*Back propagation algorithm
+	 * Used Generalized Deta Rule
+	 * Backward Error propagation 
+	 * Moving layer to layer
+	 * output to inputs
+	 * the method assumes that the layer is an output layer
+	 * targ  = current target for output layers
+	 * delta vector can be based directly on external target values
+	 * Layer object contains both a vector of target values and a vector of net input values
+	 * 		Target value (difference)
+	 * 				(Ti - yi)
+	 * 		Target value (derivative of maximum value and minimum value)
+	 * 				(i * ni)
+	*/
 	public void computeOutputDelta() {
-
+	
 		// PLACE YOUR CODE HERE ...
+		//act  = activation levels of units
+		Vector vector_difference = targ.difference(act);
+		Vector vector_derivative = targ.derivative(min, max);
+		for(int i = 0; i< n; i++) {
+			delta.set(i, vector_difference.get(i)*vector_derivative.get(i));
+			//value = difference * derivative
+		}
+		delta.sumOfElements();
+		return;
 
 	}
 
 	// computeHiddenDelta -- Calculate the unit delta values for this hidden
 	// layer.
+	/*
+	 * the delta values must be computed as a function of 
+	 * the delta values of layers that are downstream from this one. 
+	 * The downstream layers can be found by examining the projections in this layer’s
+	 * outputs instance variable
+	 * HiddenDelta is similar to OutputDelta but
+	 * 		difference value allocates empty memory space
+	 * 		the derivative is same as OutputDelta function but it uses network layer for input
+	 * Based on lecture slides
+	 * 		vector multiplied by a matrix =  product
+	 * Calculating delta value is same formula as OutputDelta function
+	 * 		value = difference * derivative
+	 */
 	public void computeHiddenDelta() {
-
+		
+		Vector vector_difference= new Vector(n, 0.0);
+		Vector vector_derivative = net.derivative(min, max);
+		//net = net input levels of units
+		for(Projection p : outputs) {
+			vector_difference = vector_difference.sum(p.W.transpose().product(p.output.delta));
+		}
+		for(int i = 0; i< n; i++) {
+			delta.set(i, vector_difference.get(i)*vector_derivative.get(i));
+			//value = difference * derivative
+		}
+		delta.sumOfElements();
+		return;
 		// PLACE YOUR CODE HERE ...
 
 	}
