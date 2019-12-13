@@ -199,7 +199,13 @@ public class Layer {
 
 	// computeOutputDelta -- Calculate the unit delta values for this
 	// output layer.
-	/*Back propagation algorithm
+	/*Layer.java
+	 * 	Equation		Code
+	 * 	Ti				targ
+	 * 	ai				act
+	 * 	ini				net
+	 * 	(delta)i 		delta
+	 *Back propagation algorithm
 	 * Used Generalized Deta Rule
 	 * Backward Error propagation 
 	 * Moving layer to layer
@@ -209,9 +215,10 @@ public class Layer {
 	 * delta vector can be based directly on external target values
 	 * Layer object contains both a vector of target values and a vector of net input values
 	 * 		Target value (difference)
-	 * 				(Ti - yi)
+	 * 				(Ti - ai) --Ti = targ / ai = act
 	 * 		Target value (derivative of maximum value and minimum value)
-	 * 				(i * ni)
+	 * 				(i * ni)  ---- i = Delta / n = number of layer
+	 * 	value = sums of ( difference * derivative)
 	*/
 	public void computeOutputDelta() {
 	
@@ -238,18 +245,20 @@ public class Layer {
 	 * HiddenDelta is similar to OutputDelta but
 	 * 		difference value allocates empty memory space
 	 * 		the derivative is same as OutputDelta function but it uses network layer for input
+	 * 			derivative of ini   ---- ini = net
+	 * 			(i  = delta)
 	 * Based on lecture slides
 	 * 		vector multiplied by a matrix =  product
 	 * Calculating delta value is same formula as OutputDelta function
-	 * 		value = difference * derivative
+	 * 		value = sums of ( difference * derivative)
 	 */
 	public void computeHiddenDelta() {
 		
 		Vector vector_difference= new Vector(n, 0.0);
 		Vector vector_derivative = net.derivative(min, max);
 		//net = net input levels of units
-		for(Projection p : outputs) {
-			vector_difference = vector_difference.sum(p.W.transpose().product(p.output.delta));
+		for(Projection prj : outputs) {
+			vector_difference = vector_difference.sum(prj.W.transpose().product(prj.output.delta));
 		}
 		for(int i = 0; i< n; i++) {
 			delta.set(i, vector_difference.get(i)*vector_derivative.get(i));
