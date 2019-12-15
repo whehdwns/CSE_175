@@ -199,7 +199,8 @@ public class Layer {
 
 	// computeOutputDelta -- Calculate the unit delta values for this
 	// output layer.
-	/*Layer.java
+	/* Delta Rule (perceptron learning procedure)
+	 * Layer.java
 	 * 	Equation		Code
 	 * 	Ti				targ
 	 * 	ai				act
